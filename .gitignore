@@ -1,31 +1,22 @@
-# created by virtualenv automatically
-# Ignore Python cache and compiled files
-__pycache__/
+# Python
 *.pyc
+__pycache__/
 *.pyo
 *.pyd
 
-# Ignore virtual environments
+# Virtual environment
 venv/
 env/
-ENV/
-.venv/
-.pyenv/
+Lib/
+Scripts/
+pyvenv.cfg
 
-# Ignore Django migrations (optional, if you don’t want to track them)
-*/migrations/__pycache__/
-*/migrations/*.py
+# Django stuff
+db.sqlite3
+media/
+staticfiles/
 
-# Ignore IDE/project files
+# IDE/editor
 .vscode/
 .idea/
-*.sqlite3
-
-# Ignore logs and temp files
-*.log
-*.pot
-*.pyc
-*.mo
 *.swp
-.DS_Store
-
