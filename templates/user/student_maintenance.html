@@ -1,0 +1,195 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Maintenance Request - UNITEN</title>
+
+  <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}" />
+  <link rel="stylesheet" href="{% static 'bootstrap_icones/iconsfonts/bootstrap-icons.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/side_nav_bar.css' %}">
+  <link rel="stylesheet" href="{% static 'FontAwesome/fontawesome-free-6.7.2-web/css/all.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/DashboardMiantenance.css' %}">
+
+  <style>
+    /* Collapsible layout behavior */
+    #mainNavbar, #content, #mainFooter {
+      transition: margin-left 0.3s ease;
+    }
+
+    #sidebar.active ~ #mainNavbar,
+    #sidebar.active ~ #content,
+    #sidebar.active ~ #mainFooter {
+      margin-left: 250px; /* Adjust based on sidebar width */
+    }
+  </style>
+  
+</head>
+
+<body>
+  <!-- Sidebar toggle -->
+  <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+
+  <!-- Navbar -->
+  <nav id="mainNavbar" class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container-fluid">
+      <a class="navbar-brand ms-5" href="#">Maintenance</a>
+      <ul class="navbar-nav ms-auto d-flex flex-row align-items-center">
+       
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+            <img src="https://i.imgur.com/wvxPV9S.png" alt="user" width="30" height="30" class="rounded-circle me-2">
+            <span class="d-none d-md-inline text-white"> {{ user.name }}</span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="{% url 'user_profile' %}">View Profile</a></li>
+            <li><a class="dropdown-item" href="{% url 'studentlogin' %}">Sign Out</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="wrapper">
+    <div class="page-layout">
+      {% include 'includes/user_sidebar.html' %}
+
+      <!-- Main Content -->
+      <div class="content-area" id="content">
+       
+  <div class="container mt-5">
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endfor %}
+        {% endif %}
+
+        <h3><i class="bi bi-tools"></i> Submit Request</h3>
+        <p>Please fill in the form below to report any room issues.</p>
+
+        <form method="POST" action="{% url 'student_maintenance' %}">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label for="issueType" class="form-label">Issue Type</label>
+            <select id="issueType" name="issue_type" class="form-select" required>
+              <option value="" selected disabled>-- Select Issue --</option>
+              <option>Water Leakage</option>
+              <option>Air Conditioner</option>
+              <option>Electricity</option>
+              <option>Furniture</option>
+              <option>Others</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label for="description" class="form-label">Describe the Issue</label>
+            <textarea id="description" name="description" class="form-control" rows="4" required></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-success">
+            <i class="bi bi-send-check"></i> Submit Request
+          </button>
+        </form>
+
+        <hr class="my-5">
+        <h4>Your Maintenance Requests</h4>
+
+        <table class="table table-bordered table-striped mt-3">
+          <thead class="table-dark">
+            <tr>
+              <th>#</th>
+              <th>Issue</th>
+              <th>Date</th>
+              <th>Status</th>
+              <th>Admin Reply</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if maintenance_requests %}
+              {% for req in maintenance_requests %}
+                <tr>
+                  <td>{{ forloop.counter }}</td>
+                  <td>{{ req.issue_type }}</td>
+                  <td>{{ req.date_reported|date:"Y-m-d H:i" }}</td>
+                  <td>
+                    <span class="badge 
+                      {% if req.status == 'pending' %}bg-warning
+                      {% elif req.status == 'in_progress' %}bg-info
+                      {% else %}bg-success{% endif %}">
+                      {{ req.get_status_display }}
+                    </span>
+                  </td>
+                  <td>
+                    {% if req.reply %}
+                      <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#replyModal{{ req.id }}">View Reply</button>
+
+                      <!-- Modal -->
+                      <div class="modal fade" id="replyModal{{ req.id }}" tabindex="-1" aria-labelledby="replyModalLabel{{ req.id }}" aria-hidden="true">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title">Admin Reply</h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                              <p>{{ req.reply }}</p>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    {% else %}
+                      <span class="text-muted">No reply yet</span>
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+            {% else %}
+              <tr><td colspan="5" class="text-center text-muted">No maintenance requests submitted.</td></tr>
+            {% endif %}
+          </tbody>
+        </table>
+
+    
+      </div>
+    </div>
+  </div>
+  </div>
+    <!-- Footer -->
+        <footer id="mainFooter">
+          {% include 'includes/footer.html' %}
+        </footer>
+  <!-- JS -->
+  <script>
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const content = document.getElementById('content');
+      const header = document.getElementById('mainNavbar');
+      const footer = document.getElementById('mainFooter');
+
+      sidebar.classList.toggle('active');
+      content.classList.toggle('active');
+      header.classList.toggle('active');
+      footer.classList.toggle('active');
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const currentPath = window.location.pathname.toLowerCase();
+      document.querySelectorAll('#sidebar a').forEach(link => {
+        const linkPath = link.getAttribute('href').toLowerCase();
+        if (currentPath.includes(linkPath)) {
+          link.classList.add('active');
+        }
+      });
+    });
+  </script>
+
+  <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>

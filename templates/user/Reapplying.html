@@ -1,0 +1,114 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Reapplying</title>
+
+  <link rel="stylesheet" href="{% static 'important libraries/css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'FontAwesome/fontawesome-free-6.7.2-web/css/all.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/side_nav_bar.css' %}">
+  <link rel="stylesheet" href="{% static 'bootstrap_icones/iconsfonts/bootstrap-icons.css' %}">
+  <link rel="stylesheet" href="{% static 'css/Reapplying.css' %}">
+
+  <style>
+    #mainHeader, #content, #mainFooter {
+      transition: margin-left 0.3s ease;
+    }
+    #sidebar.active ~ #mainHeader,
+    #sidebar.active ~ #content,
+    #sidebar.active ~ #mainFooter {
+      margin-left: 250px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="d-flex flex-column min-vh-100">
+    <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+    {% include 'includes/user_sidebar.html' %}
+
+    <header id="mainHeader" class="bg-dark text-white py-4 d-flex justify-content-between align-items-center px-4 mb-n3">
+      <h2 class="mb-1">Reapplying</h2>
+      <a href="{% url 'homepage' %}">
+        <img src="{% static 'images/logo_uniten-1.png' %}" alt="UNITEN Logo" class="img-fluid" style="height: 80px;">
+      </a>
+    </header>
+
+    <div class="content-area" id="content">
+      <div class="content-wrapper" style="max-width: 800px; width: 100%; margin: auto;">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h2 class="fw-bold">Reapply Booking</h2>
+          <div>
+            <a href="{% url 'user_profile' %}" class="btn btn-secondary me-2">
+              <i class="bi bi-person-fill"></i> Profile
+            </a>
+            <a href="{% url 'cancellation' %}" class="btn btn-danger">
+              <i class="bi bi-x-circle"></i> Cancel Booking
+           
+            </a>
+          </div>
+        </div>
+
+        {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+
+        {% if room %}
+        <div class="card p-4 shadow" id="roomInfo">
+          <h4>Your Previous Room</h4>
+          <p><strong>Room:</strong> {{ room.room_number }}</p>
+          <p><strong>Block:</strong> {{ room.apartment.block.name }}</p>
+          <p><strong>Type:</strong> {{ room.apartment.type }}</p>
+          <p><strong>Expiration Date:</strong>{{ booking.expiration_date  }}</p>
+          <p><strong>Price:</strong> 
+            {% if room.apartment.type|lower == "premium" %}RM 575
+            {% elif room.apartment.type|lower == "deluxe" %}RM 420
+            {% else %}N/A
+            {% endif %}
+          </p>
+          <div class="text-center mt-3">
+          <a href="{% url 'reapply_action' %}" class="btn btn-primary px-4">
+  Reapply for This Room
+</a>
+
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <footer id="mainFooter">
+      {% include 'includes/footer.html' %}
+    </footer>
+
+    <script>
+       function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const content = document.getElementById('content');
+  const footer = document.querySelector('footer');
+  const header = document.getElementById('page-header');
+
+  sidebar.classList.toggle('active');
+  content.classList.toggle('active');
+  footer.classList.toggle('active');
+  header.classList.toggle('active');
+}
+      document.addEventListener("DOMContentLoaded", function () {
+        const currentPath = window.location.pathname.toLowerCase();
+        document.querySelectorAll('#sidebar a').forEach(link => {
+          const linkPath = link.getAttribute('href').toLowerCase();
+          if (currentPath.includes(linkPath)) {
+            link.classList.add('active');
+          }
+        });
+      });
+    </script>
+
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+  </div>
+</body>
+</html>

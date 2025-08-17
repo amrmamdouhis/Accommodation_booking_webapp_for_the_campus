@@ -1,0 +1,179 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head> 
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login - UNITEN Accommodation</title>
+  
+  <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+  <link rel="stylesheet" href="{% static 'FontAwesome/fontawesome-free-6.7.2-web/css/all.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/side_nav_bar.css' %}">
+  <link rel="stylesheet" href="{% static 'bootstrap_icones/iconsfonts/bootstrap-icons.css' %}">
+  <link rel="stylesheet" href="{% static 'css/footer.css' %}">
+
+  <style>
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 250px;
+      height: 100%;
+      background-color: #343a40;
+      padding: 60px 20px 20px;
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+      z-index: 1000;
+    }
+    .sidebar.active {
+      transform: translateX(0);
+    }
+
+    .toggle-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 1100;
+      background-color: #343a40;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    #page-wrap {
+      transition: margin-left 0.3s ease;
+      margin-left: 0;
+    }
+    #page-wrap.active {
+      margin-left: 250px;
+    }
+  </style>
+</head>
+<body>
+  <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+
+  <!-- Sidebar -->
+  <nav class="sidebar" id="sidebar">
+    <h4 class="text-center fw-bold mb-4">UNITEN Accommodation</h4>
+    <a href="{% url 'homepage' %}"><i class="bi bi-house-door me-2"></i> Home</a>
+    <a href="{% url 'facilities' %}"><i class="bi bi-lamp me-2"></i> Facilities</a>
+    <a href="{% url 'guidelines' %}"><i class="bi bi-book me-2"></i> Guidelines</a>
+    <a href="{% url 'faq' %}"><i class="bi bi-question-circle me-2"></i> FAQ</a>
+    <a href="{% url 'studentlogin' %}"><i class="bi bi-person-fill me-2"></i> Student Login</a>
+    <a href="{% url 'admin-login' %}"><i class="bi bi-shield-lock me-2"></i> Admin Login</a>
+  </nav>
+
+  <!-- ✅ Everything inside collapsible page wrap -->
+  <div id="page-wrap">
+    <!-- Header -->
+    <header class="bg-dark text-white py-4 d-flex justify-content-between align-items-center px-4" style="margin-bottom: -30px;">
+      <h2 class="mb-1">Admin Login</h2>
+      <a href="{% url 'homepage' %}">
+        <img src="{% static 'images/logo_uniten-1.png' %}" alt="UNITEN Logo" class="img-fluid" style="height: 80px;">
+      </a>
+    </header>
+
+    <!-- Login Section -->
+    <section class="bg-light py-3 py-md-5">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-md-6 col-lg-5">
+            <div class="card border border-light-subtle rounded-3 shadow-sm">
+              <div class="card-body p-4">
+                {% if messages %}
+                  <div class="container mt-3">
+                    {% for message in messages %}
+                      {% if forloop.last %}
+                        <div class="card border-danger">
+                          <div class="card-body text-danger">
+                            <strong>Error:</strong> {{ message }}
+                          </div>
+                        </div>
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                {% endif %}
+                <h2 class="fs-6 fw-normal text-center text-secondary mb-4">Login to your Admin account</h2>
+                <form method="POST">
+                  {% csrf_token %}
+                  <div class="mb-3 form-floating">
+                    <input type="email" class="form-control" id="email" name="email" required placeholder="Email">
+                    <label for="email">Email</label>
+                  </div>
+                  <div class="mb-3 form-floating">
+                    <input type="password" class="form-control" id="password" name="password" required placeholder="Password">
+                    <label for="password">Password</label>
+                  </div>
+                  
+                  <div class="d-grid">
+                    <button class="btn btn-primary btn-lg" type="submit">Log in</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer mt-auto">
+      <div class="container">
+        <section class="d-flex justify-content-between align-items-center p-4" style="background-color: #6351ce">
+          <span class="text-white">Get connected with us on social networks:</span>
+          <div class="d-flex align-items-center">
+            <a href="https://www.facebook.com/uniten/" class="text-white me-3"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://twitter.com/uniten" class="text-white me-3"><i class="fab fa-twitter"></i></a>
+            <a href="https://www.instagram.com/uniten.official/?hl=en" class="text-white me-3"><i class="fab fa-instagram"></i></a>
+            <img src="{% static 'images/logo_uniten-1.png' %}" alt="UNITEN Logo" class="img-fluid" style="height: 70px; margin-left: 20px;">
+          </div>
+        </section>
+
+        <section class="mt-4">
+          <div class="row">
+            <div class="col-md-3">
+              <h6 class="text-uppercase fw-bold">Universiti Tenaga Nasional</h6>
+              <p>We provide the best accommodation services for UNITEN students.</p>
+            </div>
+            <div class="col-md-3">
+              <h6 class="text-uppercase fw-bold">Useful Links</h6>
+              <p><a href="{% url 'faq' %}" class="text-white">FAQ</a></p>
+              <p><a href="{% url 'guidelines' %}" class="text-white">Guidelines</a></p>
+            </div>
+            <div class="col-md-3">
+              <h6 class="text-uppercase fw-bold">Contact</h6>
+              <p><i class="fas fa-home"></i> Cendekiawan Apartment, Kajang, Selangor</p>
+              <p><i class="fas fa-envelope"></i> <a href="https://www.uniten.edu.my/student-hub/" class="text-white">Student Hub</a></p>
+              <p><i class="fas fa-phone"></i> T: +603-8921 2020</p>
+            </div>
+          </div>
+        </section>
+
+        <div class="text-center p-3" style="background-color: rgba(0,0,0,0.2);">
+          © 2025 UNITEN
+        </div>
+      </div>
+    </footer>
+  </div> <!-- End page-wrap -->
+
+  <script>
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('active');
+      document.getElementById('page-wrap').classList.toggle('active');
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const currentPath = window.location.pathname.toLowerCase();
+      document.querySelectorAll('#sidebar a').forEach(link => {
+        const linkPath = link.getAttribute('href').toLowerCase();
+        if (currentPath === linkPath) {
+          link.classList.add('active');
+        }
+      });
+    });
+  </script>
+  <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>

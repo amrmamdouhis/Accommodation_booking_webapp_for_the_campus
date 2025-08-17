@@ -1,0 +1,114 @@
+/* Body layout */
+body {
+  background-color: #f8f9fa;
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Header style */
+header {
+  background-color: #212529;
+  color: white;
+  padding: 20px 40px;
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Main content wrapper */
+.content-area {
+  padding: 100px 2rem 2rem 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+.content-wrapper {
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 40px;
+  max-width: 600px;
+  width: 100%;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+/* Headings and text */
+.content-wrapper h2 {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.content-wrapper p,
+.content-wrapper label {
+  font-size: 1rem;
+  color: #444;
+}
+
+/* Room options */
+.room-option label {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 12px 20px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  transition: all 0.2s ease;
+  background-color: #f9f9f9;
+}
+
+.room-option label:hover {
+  background-color: #eef1f4;
+}
+
+.room-option input[type="radio"] {
+  transform: scale(1.2);
+}
+
+/* Buttons */
+.btn {
+  font-size: 1rem;
+  padding: 10px 24px;
+  border-radius: 6px;
+}
+
+.btn-primary {
+  background-color: #198754;  /* Bootstrap Success Green */
+  border: none;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #157347;
+}
+
+
+.btn-outline-dark {
+  border: 1px solid #343a40;
+  color: #343a40;
+}
+
+.btn-outline-dark:hover {
+  background-color: #343a40;
+  color: white;
+}
+
+.btn-outline-danger {
+  border: 1px solid #dc3545;
+  color: #dc3545;
+}
+
+.btn-outline-danger:hover {
+  background-color: #dc3545;
+  color: white;
+}
+
+/* Footer (optional) */
+.footer {
+  background-color: #1c2331;
+  color: white;
+  text-align: center;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}

@@ -1,0 +1,115 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* Ensures better layout handling */
+}
+
+body {
+    background-color: #f8f9fa; /* Change from pure black to a softer gray */
+    font-family: Arial, sans-serif;
+}
+
+.card {
+    width: 350px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-5px); /* Slight lift effect */
+}
+
+.image img {
+    transition: transform 0.3s ease-in-out;
+}
+
+.card:hover .image img {
+    transform: scale(1.2); /* Reduced zoom */
+}
+
+.btn-dark {
+    width: auto; /* Ensures it takes natural width */
+    height: auto; /* Ensures it doesn't force a circular shape */
+    border-radius: 5px; /* Gives it slightly rounded corners, change to 0 if you want sharp corners */
+    padding: 10px 20px; /* Adds better spacing */
+}
+
+
+.name {
+    font-size: 22px;
+    font-weight: bold;
+    color: #333;
+}
+
+.idd {
+    font-size: 14px;
+    font-weight: 600;
+    color: #666;
+}
+
+.idd1 {
+    font-size: 12px;
+    color: #777;
+}
+
+.number {
+    font-size: 22px;
+    font-weight: bold;
+    color: #222;
+}
+
+.follow {
+    font-size: 12px;
+    font-weight: 500;
+    color: #444;
+}
+
+.btn1 {
+    height: 40px;
+    width: 150px;
+    border: none;
+    background-color: #000;
+    color: #ffffff; /* Improved contrast */
+    font-size: 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.btn1:hover {
+    background-color: #333; /* Darker on hover */
+}
+
+.text span {
+    font-size: 13px;
+    color: #545454;
+    font-weight: 500;
+}
+
+.icons i {
+    font-size: 19px;
+    color: #333;
+    transition: color 0.3s ease-in-out;
+}
+
+.icons i:hover {
+    color: #007bff; /* Highlight on hover */
+}
+
+.new1 {
+    border: 1px solid #ddd;
+}
+
+.join {
+    font-size: 14px;
+    color: #888;
+    font-weight: bold;
+}
+
+.date {
+    background-color: #ddd; /* Lighter background for better contrast */
+    padding: 5px 10px;
+    border-radius: 5px;
+}

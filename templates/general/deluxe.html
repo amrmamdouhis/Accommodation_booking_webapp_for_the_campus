@@ -1,0 +1,162 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Login - UNITEN Accommodation</title>
+
+  <!-- ✅ CSS Files -->
+  <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+  <link rel="stylesheet" href="{% static 'FontAwesome/fontawesome-free-6.7.2-web/css/all.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/deluxe.css' %}">
+  <link rel="stylesheet" href="{% static 'css/side_nav_bar.css' %}">
+  <link rel="stylesheet" href="{% static 'bootstrap_icones/iconsfonts/bootstrap-icons.css' %}">
+  <link rel="stylesheet" href="{% static 'css/footer.css' %}">
+
+
+  <style>
+    .content,
+    footer {
+      transition: margin-left 0.3s ease;
+      margin-left: 0;
+    }
+
+    .content.active,
+    footer.active {
+      margin-left: 250px;
+    }
+    #page-wrap {
+  transition: margin-left 0.3s ease;
+  margin-left: 0;
+}
+
+#page-wrap.active {
+  margin-left: 250px;
+}
+  </style>
+</head>
+<body>
+
+  <!-- ✅ Toggle Button -->
+  <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+
+  <!-- ✅ Sidebar -->
+  <nav class="sidebar" id="sidebar">
+    <h4 class="text-center fw-bold mb-4">UNITEN Accommodation</h4>
+    <a href="{% url 'homepage' %}"><i class="bi bi-house-door me-2"></i> Home</a>
+    <a href="{% url 'facilities' %}"><i class="bi bi-lamp me-2"></i> Facilities</a>
+    <a href="{% url 'guidelines' %}"><i class="bi bi-book me-2"></i> Guidelines</a>
+    <a href="{% url 'faq' %}"><i class="bi bi-question-circle me-2"></i> FAQ</a>
+    <a href="{% url 'studentlogin' %}"><i class="bi bi-person-fill me-2"></i> Student Login</a>
+    <a href="{% url 'admin-login' %}"><i class="bi bi-shield-lock me-2"></i> Admin Login</a>
+  </nav>
+
+  <div id="page-wrap">
+  <!-- ✅ Header -->
+  <header class="bg-dark text-white d-flex justify-content-between align-items-center px-4 py-3" style="margin-bottom: -30px;">
+    <h2 class="mb-0">Deluxe</h2>
+    <a href="{% url 'homepage' %}">
+      <img src="{% static 'images/logo_uniten-1.png' %}" alt="UNITEN Logo" class="img-fluid" style="height: 80px;">
+    </a>
+  </header>
+
+  <!-- ✅ Room Banner -->
+  <div class="text-center">
+    <img src="{% static 'images/residence-murni-deluxe-01.jpg' %}" alt="Room Banner" class="img-fluid w-100" style="max-height: 600px; object-fit: cover;">
+  </div>
+</div>
+
+
+  <!-- ✅ Main Content -->
+  <div class="content" id="content">
+    <div class="main-content">
+      <section class="container my-5">
+        <h2 class="text-center mb-4">Deluxe Room Features</h2>
+        <div class="table-responsive">
+          <table class="table table-bordered table-hover text-center">
+            <thead class="table-dark">
+              <tr><th>Feature</th><th>Availability</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Hot Water for Bathtub</td> <td>❌</td></tr>
+              <tr><td>AC in Each Room</td> <td>❌</td></tr>
+              <tr><td>Fan in Each Room</td> <td>✅</td></tr>
+              <tr><td>Shared Fridge (4 Rooms)</td> <td>❌</td></tr>
+              <tr><td>One Person per Room</td> <td>✅</td></tr>
+              <tr><td>Bed with Attached Headrest</td> <td>❌</td></tr>
+              <tr><td>One Desk per Room</td> <td>✅</td></tr>
+              <tr><td>Wardrobe</td> <td>✅ (No Sections)</td></tr>
+              <tr><td>Price</strong></td><td><strong>RM 420 / month</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- ✅ Footer -->
+  <footer class="footer mt-auto">
+    <div class="container">
+      <section class="d-flex justify-content-between align-items-center p-4" style="background-color: #6351ce">
+        <div class="me-5">
+          <span class="text-white">Get connected with us on social networks:</span>
+        </div>
+        <div class="d-flex align-items-center">
+          <a href="https://www.facebook.com/uniten/" class="text-white me-3"><i class="fab fa-facebook-f"></i></a>
+          <a href="https://twitter.com/uniten" class="text-white me-3"><i class="fab fa-twitter"></i></a>
+          <a href="https://www.instagram.com/uniten.official/?hl=en" class="text-white me-3"><i class="fab fa-instagram"></i></a>
+          <img src="{% static 'images/logo_uniten-1.png' %}" alt="UNITEN Logo" class="img-fluid" style="height: 70px; margin-left: 20px;">
+        </div>
+      </section>
+
+      <section class="mt-4">
+        <div class="row">
+          <div class="col-md-3">
+            <h6 class="text-uppercase fw-bold">Universiti Tenaga Nasional</h6>
+            <p>We provide the best accommodation services for UNITEN students.</p>
+          </div>
+          <div class="col-md-3">
+            <h6 class="text-uppercase fw-bold">Useful Links</h6>
+            <p><a href="{% url 'faq' %}" class="text-white">FAQ</a></p>
+            <p><a href="{% url 'guidelines' %}" class="text-white">Guidelines</a></p>
+          </div>
+          <div class="col-md-3">
+            <h6 class="text-uppercase fw-bold">Contact</h6>
+            <p><i class="fas fa-home mr-3"></i> Cendekiawan Apartment, Kajang, Selangor</p>
+            <p><i class="fas fa-envelope mr-3"></i> 
+              <a href="https://www.uniten.edu.my/student-hub/" class="text-white">UNITEN Student Hub</a>
+            </p>
+            <p><i class="fas fa-phone mr-3"></i> T: +603-8921 2020</p>
+          </div>
+        </div>
+      </section>
+
+      <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2)">
+        © 2025 UNITEN
+      </div>
+    </div>
+  </footer>
+
+  <!-- ✅ Scripts -->
+  <script>
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('active');
+      document.getElementById('page-wrap').classList.toggle('active');
+      document.getElementById('content').classList.toggle('active');
+      document.querySelector('footer').classList.toggle('active');
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const currentPath = window.location.pathname.toLowerCase();
+      document.querySelectorAll('#sidebar a').forEach(link => {
+        const linkPath = link.getAttribute('href').toLowerCase();
+        if (currentPath === linkPath) {
+          link.classList.add('active');
+        }
+      });
+    });
+  </script>
+  <script src="{% static '/js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>

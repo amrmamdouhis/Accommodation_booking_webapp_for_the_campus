@@ -1,0 +1,184 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Dashboard - UNITEN</title>
+  <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}" />
+  <link rel="stylesheet" href="{% static 'bootstrap_icones/iconsfonts/bootstrap-icons.css' %}">
+  <link rel="stylesheet" href="{% static 'css/studentDashboard.css' %}">
+  <link rel="stylesheet" href="{% static 'FontAwesome/fontawesome-free-6.7.2-web/css/all.min.css' %}">
+
+  <style>
+    #sidebar {
+      transition: all 0.3s ease;
+    }
+    #sidebar.collapsed {
+      margin-left: -250px;
+    }
+    .content-area,
+    footer.footer {
+      transition: margin-left 0.3s ease;
+      margin-left: 250px;
+    }
+    .content-area.collapsed,
+    footer.footer.collapsed {
+      margin-left: 0;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Top Navbar -->
+<button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+  <div class="container-fluid">
+    <a class="navbar-brand ms-5" href="#">UNITEN Dashboard</a>
+    <ul class="navbar-nav ms-auto d-flex flex-row align-items-center">
+      
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+          <img src="https://i.imgur.com/wvxPV9S.png" alt="user" width="30" height="30" class="rounded-circle me-2">
+          <span class="d-none d-md-inline text-white"> {{ user.name }}</span>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><a class="dropdown-item" href="{% url 'user_profile' %}">View Profile</a></li>
+          <li><a class="dropdown-item" href="{% url 'studentlogin' %}">Sign Out</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<div class="wrapper d-flex">
+  {% include 'includes/user_sidebar.html' %}
+  <div class="content-area" id="main-content">
+    <div class="container mt-4">
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+
+      <h2 class="mb-4">Welcome, {{ user.name }}!</h2>
+
+      {% if current_booking %}
+        <p>Your current room: <strong>
+          Block {{ current_booking.room.apartment.block.name }}, 
+          Room {{ current_booking.room.room_number }}
+        </strong></p>
+      {% else %}
+        <p>You currently have no active room booking.</p>
+      {% endif %}
+
+      <div id="roomCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          <div class="carousel-item active position-relative">
+            <img src="{% static 'images/premium_Apartment_Uniten_202406092214_3.jpg' %}" class="d-block w-100" alt="premium">
+            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-3">
+              <h5>Premium Apartment</h5>
+              <p>Modern, spacious living for students who want the best comfort.</p>
+              <a href="{% url 'dashbordpremium' %}" class="btn btn-primary">View Room</a>
+              <a href="{% url 'apply_room' %}" class="btn btn-outline-light">Apply Now</a>
+            </div>
+          </div>
+
+          <div class="carousel-item">
+            <img src="{% static 'images/residence-murni-deluxe-01.jpg' %}" class="d-block w-100" alt="deluxe">
+            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-3">
+              <h5>Deluxe Room</h5>
+              <p>Perfect balance of affordability and essential amenities.</p>
+              <a href="{% url 'dashbordDeluxe' %}" class="btn btn-primary">View Room</a>
+              <a href="{% url 'apply_room' %}" class="btn btn-outline-light">Apply Now</a>
+            </div>
+          </div>
+        </div>
+
+        <button class="carousel-control-prev" type="button" data-bs-target="#roomCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#roomCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon"></span>
+        </button>
+      </div>
+
+      <div class="row text-center mb-4">
+        <div class="col-md-3 mb-3">
+          <div class="card h-100 shadow-sm">
+            <div class="card-body">
+              <i class="bi bi-journal-plus display-6 text-primary mb-2"></i>
+              <h6 class="card-title">Apply for Room</h6>
+              <a href="{% url 'apply_room' %}" class="btn btn-sm btn-outline-primary">Apply Now</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3 mb-3">
+          <div class="card h-100 shadow-sm">
+            <div class="card-body">
+              <i class="bi bi-tools display-6 text-warning mb-2"></i>
+              <h6 class="card-title">Maintenance</h6>
+              <a href="{% url 'student_maintenance' %}" class="btn btn-sm btn-outline-warning">Request Fix</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3 mb-3">
+          <div class="card h-100 shadow-sm">
+            <div class="card-body">
+              <i class="bi bi-repeat display-6 text-success mb-2"></i>
+              <h6 class="card-title">Reapply</h6>
+              <a href="{% url 'reapplying' %}" class="btn btn-sm btn-outline-success">Reapply</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3 mb-3">
+          <div class="card h-100 shadow-sm">
+            <div class="card-body">
+              <i class="bi bi-exclamation-diamond display-6 text-danger mb-2"></i>
+              <h6 class="card-title">Complaint</h6>
+              <a href="{% url 'complain' %}" class="btn btn-sm btn-outline-danger">Report</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% include 'includes/footer.html' %}
+
+<script>
+  const notifications = ["Your room booking is confirmed.", "Maintenance will start tomorrow at 9AM."];
+  const dropdown = document.getElementById('notifDropdown');
+  const notifCount = document.getElementById('notif-count');
+  dropdown.innerHTML = '';
+  notifications.forEach(note => {
+    const item = document.createElement('a');
+    item.className = 'dropdown-item';
+    item.innerHTML = `<i class="bi bi-info-circle me-2"></i>${note}`;
+    dropdown.appendChild(item);
+  });
+  notifCount.textContent = notifications.length;
+</script>
+
+<script>
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('collapsed');
+    document.getElementById('main-content').classList.toggle('collapsed');
+    const footer = document.querySelector('footer.footer');
+    if (footer) footer.classList.toggle('collapsed');
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const currentPath = window.location.pathname.toLowerCase();
+    document.querySelectorAll('#sidebar a').forEach(link => {
+      const linkPath = link.getAttribute('href').toLowerCase();
+      if (currentPath.includes(linkPath)) {
+        link.classList.add('active');
+      }
+    });
+  });
+</script>
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>

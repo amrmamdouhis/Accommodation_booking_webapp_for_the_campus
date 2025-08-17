@@ -1,0 +1,59 @@
+/* Cleaned and improved CSS without editing sidebar-related code */
+
+body {
+    background-color: #f8f9fa;
+    min-height: 100vh;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Main Content should grow to fill remaining space */
+.content {
+    flex-grow: 1;
+    padding: 20px;
+}
+
+/* Hero Banner Styling */
+.hero {
+    background: url('../images/premium_Apartment_Uniten_202406092214_3.jpg') no-repeat center center/cover;
+    height: 600px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    color: white;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+    font-size: 2rem;
+    padding-right: 50px;
+}
+
+/* Footer Styling */
+.footer {
+    background-color: #343a40;
+    color: white;
+    text-align: center;
+    padding: 20px 0;
+    width: 100%;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+    color: #ddd;
+}
+
+/* Responsive Buttons */
+.btn-lg {
+    min-width: 200px;
+}
+
+/* Adjust spacing for stacked buttons */
+@media (max-width: 768px) {
+    .text-center.my-5.d-flex {
+        flex-direction: column;
+        gap: 1rem;
+    }
+}

@@ -1,0 +1,203 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>In-Room Facilities - UNITEN Accommodation</title>
+
+  <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+  <link rel="stylesheet" href="{% static 'FontAwesome/fontawesome-free-6.7.2-web/css/all.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/side_nav_bar.css' %}">
+  <link rel="stylesheet" href="{% static 'bootstrap_icones/iconsfonts/bootstrap-icons.css' %}">
+  <link rel="stylesheet" href="{% static 'css/footer.css' %}">
+  <link rel="stylesheet" href="{% static 'css/genral..css' %}">
+
+  <style>
+    /* Sidebar */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 250px;
+      background-color: #343a40;
+      padding: 60px 20px 20px 20px;
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+      z-index: 1000;
+    }
+
+    .sidebar.active {
+      transform: translateX(0);
+    }
+
+    /* Page shift */
+    #page-wrap {
+      transition: margin-left 0.3s ease;
+      margin-left: 0;
+    }
+
+    #page-wrap.active {
+      margin-left: 250px;
+    }
+
+    /* Toggle Button */
+    .toggle-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 1100;
+      background-color: #343a40;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      font-size: 20px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body class="homepage">
+
+<!-- ✅ Sidebar Toggle Button -->
+<button class="toggle-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+
+<!-- ✅ Sidebar -->
+<nav class="sidebar" id="sidebar">
+  <h4 class="text-center fw-bold mb-4">UNITEN Accommodation</h4>
+  <a href="{% url 'homepage' %}"><i class="bi bi-house-door me-2"></i> Home</a>
+  <a href="{% url 'facilities' %}"><i class="bi bi-lamp me-2"></i> Facilities</a>
+  <a href="{% url 'guidelines' %}"><i class="bi bi-book me-2"></i> Guidelines</a>
+  <a href="{% url 'faq' %}"><i class="bi bi-question-circle me-2"></i> FAQ</a>
+  <a href="{% url 'studentlogin' %}"><i class="bi bi-person-fill me-2"></i> Student Login</a>
+  <a href="{% url 'admin-login' %}"><i class="bi bi-shield-lock me-2"></i> Admin Login</a>
+</nav>
+
+<!-- ✅ Page Wrapper for collapsing -->
+<div id="page-wrap">
+
+  <!-- ✅ Header -->
+  <header class="bg-dark text-white py-4 d-flex justify-content-between align-items-center" style="padding: 0 2rem; margin-bottom: -30px;">
+    <h2 class="mb-1">Facilities</h2>
+    <a href="{% url 'homepage' %}">
+      <img src="{% static 'images/logo_uniten-1.png' %}" alt="UNITEN Logo" class="img-fluid" style="height: 80px;">
+    </a>
+  </header>
+
+  <!-- ✅ Main Content -->
+  <div id="content" class="content">
+
+    <!-- ✅ Hero Section -->
+    <div class="hero text-center my-5">
+      <h1 class="fw-bold display-5">In-Room Facilities</h1>
+      <p class="lead">Comfortable, well-equipped rooms to support your academic journey.</p>
+    </div>
+
+    <!-- ✅ Facilities Cards -->
+    <div class="container my-5">
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="card shadow-sm p-4 h-100">
+            <h4 class="text-primary mb-3"><i class="fas fa-bed"></i> Basic Amenities</h4>
+            <ul class="list-unstyled">
+              <li><i class="fas fa-check-circle text-success"></i> Single/Bunk Beds</li>
+              <li><i class="fas fa-check-circle text-success"></i> Study Desk & Chair</li>
+              <li><i class="fas fa-check-circle text-success"></i> Personal Wardrobe</li>
+              <li><i class="fas fa-check-circle text-success"></i> Bookshelf</li>
+              <li><i class="fas fa-check-circle text-success"></i> Fan/Air Conditioning</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card shadow-sm p-4 h-100">
+            <h4 class="text-primary mb-3"><i class="fas fa-wifi"></i> Utilities & Connectivity</h4>
+            <ul class="list-unstyled">
+              <li><i class="fas fa-check-circle text-success"></i> High-Speed Wi-Fi</li>
+              <li><i class="fas fa-check-circle text-success"></i> Multiple Electrical Sockets</li>
+              <li><i class="fas fa-check-circle text-success"></i> Study Lamps</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card shadow-sm p-4 h-100">
+            <h4 class="text-primary mb-3"><i class="fas fa-bath"></i> Shared Facilities</h4>
+            <ul class="list-unstyled">
+              <li><i class="fas fa-check-circle text-success"></i> Shared Bathrooms</li>
+              <li><i class="fas fa-check-circle text-success"></i> Kitchenette</li>
+              <li><i class="fas fa-check-circle text-success"></i> Laundry Access</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div> <!-- End of #content -->
+
+  <!-- ✅ Footer -->
+  <footer class="footer mt-auto">
+    <div class="container">
+      <section class="d-flex justify-content-between align-items-center p-4" style="background-color: #6351ce">
+        <div class="me-5">
+          <span class="text-white">Get connected with us on social networks:</span>
+        </div>
+        <div class="d-flex align-items-center">
+          <a href="https://www.facebook.com/uniten/" class="text-white me-3"><i class="fab fa-facebook-f"></i></a>
+          <a href="https://twitter.com/uniten" class="text-white me-3"><i class="fab fa-twitter"></i></a>
+          <a href="https://www.instagram.com/uniten.official/?hl=en" class="text-white me-3"><i class="fab fa-instagram"></i></a>
+          <img src="{% static 'images/logo_uniten-1.png' %}" alt="UNITEN Logo" class="img-fluid" style="height: 70px; margin-left: 20px;">
+        </div>
+      </section>
+
+      <section class="mt-4">
+        <div class="row">
+          <div class="col-md-3">
+            <h6 class="text-uppercase fw-bold">Universiti Tenaga Nasional</h6>
+            <p>We provide the best accommodation services for UNITEN students.</p>
+          </div>
+          <div class="col-md-3">
+            <h6 class="text-uppercase fw-bold">Useful Links</h6>
+            <p><a href="{% url 'faq' %}" class="text-white">FAQ</a></p>
+            <p><a href="{% url 'guidelines' %}" class="text-white">Guidelines</a></p>
+          </div>
+          <div class="col-md-3">
+            <h6 class="text-uppercase fw-bold">Contact</h6>
+            <p><i class="fas fa-home mr-3"></i> Cendekiawan Apartment, Kajang, Selangor</p>
+            <p><i class="fas fa-envelope mr-3"></i> 
+              <a href="https://www.uniten.edu.my/student-hub/" class="text-white">UNITEN Student Hub</a>
+            </p>
+            <p><i class="fas fa-phone mr-3"></i> T: +603-8921 2020</p>
+          </div>
+        </div>
+      </section>
+
+      <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2)">
+        © 2025 UNITEN
+      </div>
+    </div>
+  </footer>
+
+</div> <!-- End of #page-wrap -->
+
+<!-- ✅ Sidebar Toggle Script -->
+<script>
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('active');
+    document.getElementById('page-wrap').classList.toggle('active');
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const currentPath = window.location.pathname.toLowerCase();
+    document.querySelectorAll('#sidebar a').forEach(link => {
+      const linkPath = link.getAttribute('href').toLowerCase();
+      if (currentPath === linkPath) {
+        link.classList.add('active');
+      }
+    });
+  });
+</script>
+
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>

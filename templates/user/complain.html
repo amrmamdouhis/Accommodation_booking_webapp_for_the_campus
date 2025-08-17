@@ -1,0 +1,182 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Submit Complaint - UNITEN</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+  <link rel="stylesheet" href="{% static 'FontAwesome/fontawesome-free-6.7.2-web/css/all.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/side_nav_bar.css' %}">
+  <link rel="stylesheet" href="{% static 'bootstrap_icones/iconsfonts/bootstrap-icons.css' %}">
+  <link rel="stylesheet" href="{% static 'css/footer.css' %}">
+
+  <style>
+    #mainHeader, #content, #mainFooter {
+      transition: margin-left 0.3s ease;
+    }
+
+    #sidebar.active ~ #mainHeader,
+    #sidebar.active ~ #content,
+    #sidebar.active ~ #mainFooter {
+      margin-left: 250px; /* Sidebar width */
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Toggle Button -->
+  <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+
+  <!-- Header -->
+  <nav id="mainHeader" class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container-fluid">
+      <a class="navbar-brand ms-5" href="#">Complaints</a>
+      <ul class="navbar-nav ms-auto d-flex flex-row align-items-center">
+        
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+            <img src="https://i.imgur.com/wvxPV9S.png" alt="user" width="30" height="30" class="rounded-circle me-2">
+            <span class="d-none d-md-inline text-white"> {{ user.name }}</span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="{% url 'user_profile' %}">View Profile</a></li>
+            <li><a class="dropdown-item" href="{% url 'studentlogin' %}">Sign Out</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="wrapper">
+    {% include 'includes/user_sidebar.html' %}
+
+    <!-- Main Content -->
+    <div class="content-area" id="content">
+      <div class="container mt-4" style="max-width: 800px">
+        <div>
+           <h3><i class="bi bi-exclamation-diamond text-danger me-2"></i> Complaint</h3>
+          <h2 class="mb-4">
+            <i class="bi bi-exclamation-diamond text-danger me-2"></i> Submit a Complaint
+          </h2>
+
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endfor %}
+          {% endif %}
+
+          <form method="POST" action="{% url 'complain' %}">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label for="subject" class="form-label">Subject</label>
+              <input type="text" class="form-control" id="subject" name="subject"
+                     placeholder="Enter the complaint subject" required>
+            </div>
+
+            <div class="mb-3">
+              <label for="description" class="form-label">Message</label>
+              <textarea class="form-control" id="description" name="description"
+                        rows="6" placeholder="Describe your issue..." required></textarea>
+            </div>
+
+            <div class="text-end">
+              <button type="submit" class="btn btn-danger">
+                <i class="bi bi-send"></i> Submit Complaint
+              </button>
+            </div>
+          </form>
+
+          <hr>
+          <h4 class="mt-5">Your Submitted Complaints</h4>
+
+          <table class="table table-bordered mt-3">
+            <thead class="table-dark">
+              <tr>
+                <th>#</th>
+                <th>Subject</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Admin Reply</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for complaint in complaints %}
+                <tr>
+                  <td>{{ forloop.counter }}</td>
+                  <td>{{ complaint.subject }}</td>
+                  <td>{{ complaint.date|date:'Y-m-d H:i' }}</td>
+                  <td><span class="badge bg-{% if complaint.status == 'pending' %}warning{% elif complaint.status == 'resolved' %}success{% else %}secondary{% endif %}">{{ complaint.get_status_display }}</span></td>
+                  <td>
+                    {% if complaint.reply %}
+                      <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#replyModal{{ complaint.id }}">View Reply</button>
+                      <div class="modal fade" id="replyModal{{ complaint.id }}" tabindex="-1" aria-labelledby="replyModalLabel{{ complaint.id }}" aria-hidden="true">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="replyModalLabel{{ complaint.id }}">Admin Reply</h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                              <p>{{ complaint.reply }}</p>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    {% else %}
+                      <span class="text-muted">No reply yet</span>
+                    {% endif %}
+                  </td>
+                </tr>
+              {% empty %}
+                <tr><td colspan="5" class="text-center text-muted">You have not submitted any complaints yet.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer id="mainFooter">
+    {% include 'includes/footer.html' %}
+  </footer>
+
+  <!-- Scripts -->
+  <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'js/user_user_sidebar.js' %}"></script>
+  <script>
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const content = document.getElementById('content');
+      const header = document.getElementById('mainHeader');
+      const footer = document.getElementById('mainFooter');
+
+      sidebar.classList.toggle('active');
+      content.classList.toggle('active');
+      header.classList.toggle('active');
+      footer.classList.toggle('active');
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const currentPath = window.location.pathname.toLowerCase();
+      document.querySelectorAll('#sidebar a').forEach(link => {
+        const linkPath = link.getAttribute('href').toLowerCase();
+        if (currentPath === linkPath) {
+          link.classList.add('active');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

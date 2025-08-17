@@ -1,0 +1,386 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Bookings - UNITEN Accommodation</title>
+
+  <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+  <link rel="stylesheet" href="{% static 'FontAwesome/fontawesome-free-6.7.2-web/css/all.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/side_nav_bar.css' %}">
+  <link rel="stylesheet" href="{% static 'bootstrap_icones/iconsfonts/bootstrap-icons.css' %}">
+  <link rel="stylesheet" href="{% static 'css/footer.css' %}">
+  <link rel="stylesheet" href="{% static 'css/AdminDashboard.css' %}">
+  <style>
+    .content { margin-top: 70px; }
+    .table th, .table td { vertical-align: middle; }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <nav class="sidebar" id="sidebar">
+    <h4 class="fw-bold mb-4">UNITEN Accommodation</h4>
+    <a href="{% url 'admindashboard' %}"><i class="bi bi-house-door me-2"></i> Dashboard</a>
+    <a href="{% url 'adminprofile' %}"><i class="bi bi-person-circle me-2"></i> Profile</a>
+    <a href="{% url 'admincomplaints' %}"><i class="bi bi-exclamation-diamond me-2"></i> Complaints</a>
+    <a href="{% url 'maintenance' %}"><i class="bi bi-wrench-adjustable me-2"></i> Maintenance</a>
+    <a href="{% url 'adminbookings' %}"><i class="bi bi-journal-check me-2"></i> Bookings</a>
+    <a href="{% url 'adminapartments' %}" ><i class="bi bi-building me-2"></i> Apartments</a>
+    <a href="{% url 'Adminaddstudents' %}"><i class="bi bi-person-plus-fill me-2"></i> Admin - Add Students</a>
+    <a href="{% url 'admin-login' %}"><i class="bi bi-box-arrow-right me-2"></i> Logout</a>
+  
+  </nav>
+  
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container-fluid px-4">
+      <button class="btn text-white me-3" onclick="toggleSidebar()">☰</button>
+      <a class="navbar-brand" href="#">Booking Management</a>
+      <ul class="navbar-nav ms-auto d-flex flex-row align-items-center gap-3">
+        
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+            <img src="https://i.imgur.com/wvxPV9S.png" alt="admin" width="32" height="32" class="rounded-circle me-2">
+            <span class="text-white d-none d-md-inline">{{ user.name }}</span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="{% url 'adminprofile' %}">View Profile</a></li>
+            <li><a class="dropdown-item" href="{% url 'admin-login' %}">Sign Out</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="content" id="content">
+    <div class="container my-5">
+      {% if messages %}
+    <div class="mt-3">
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+      <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+        <button class="btn btn-success mt-2 mt-md-0" data-bs-toggle="modal" data-bs-target="#addBookingModal">
+          <i class="bi bi-plus-circle me-1"></i> Add Booking
+        </button>
+      </div>
+
+      <form method="GET" class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
+        <div class="input-group" style="max-width: 300px;">
+          <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
+          <input type="text" class="form-control border-start-0" name="search" placeholder="Search by student name or room..." value="{{ request.GET.search }}">
+        </div>
+        <div class="mt-2 mt-md-0 d-flex align-items-center">
+          <select name="status" class="form-select me-2" style="width: 200px;">
+            <option value="">Filter by status</option>
+            <option value="active" {% if request.GET.status == 'active' %}selected{% endif %}>Active</option>
+            <option value="cancelled" {% if request.GET.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+          </select>
+          <button class="btn btn-outline-secondary">Apply</button>
+          <a href="{% url 'adminbookings' %}" class="btn btn-outline-dark ms-2">Reset</a>
+        </div>
+      </form>
+
+      <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+          <tr>
+            <th>Student Name</th>
+            <th>Student ID</th>
+            <th>Program</th>
+            <th>Country</th>
+            <th>Accommodation</th>
+            <th>Apartment Type	</th>
+            <th>Room</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if bookings %}
+            {% for booking in bookings %}
+              <tr>
+                <td>{{ booking.student.name }}</td>
+                <td>{{ booking.student.user_id }}</td>
+                <td>{{ booking.student.program }}</td>
+                <td>{{ booking.student.country }}</td>
+                <td>
+                  {% if booking.room %}
+                    {{ booking.room.apartment.block.accommodation.name }}
+                  {% else %}
+                    N/A
+                  {% endif %}
+                </td>
+                <td>
+                  {{ booking.room.apartment.type }}
+                </td>
+                <td>
+                  {% if booking.room %}
+                    {{ booking.room.apartment.block.name }} - Room {{ booking.room.room_number }}
+                  {% else %}
+                    N/A
+                  {% endif %}
+                </td>
+                <td>{{ booking.booking_date|date:"Y-m-d" }}</td>
+                <td>
+                  <span class="badge {% if booking.status == 'active' %}bg-success{% else %}bg-secondary{% endif %}">
+                    {{ booking.get_status_display }}
+                  </span>
+                </td>
+                <td>
+                  {% if booking.status == 'active' %}
+                    <form method="post" action="{% url 'cancel_booking' booking.id %}">
+                      {% csrf_token %}
+                      <button class="btn btn-sm btn-outline-danger">Cancel</button>
+                    </form>
+                  {% else %}
+                    <span class="text-muted">Cancelled</span>
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          {% else %}
+            <tr class="text-center text-muted">
+              <td colspan="9">No bookings found.</td>
+            </tr>
+          {% endif %}
+        </tbody>
+      </table>
+      
+      <!-- Pagination -->
+      <nav aria-label="Booking Pagination">
+        <ul class="pagination justify-content-end mt-3">
+          {% if bookings.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page={{ bookings.previous_page_number }}">Previous</a></li>
+          {% else %}
+            <li class="page-item disabled"><span class="page-link">Previous</span></li>
+          {% endif %}
+          {% for page_num in bookings.paginator.page_range %}
+            <li class="page-item {% if bookings.number == page_num %}active{% endif %}">
+              <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
+            </li>
+          {% endfor %}
+          {% if bookings.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ bookings.next_page_number }}">Next</a></li>
+          {% else %}
+            <li class="page-item disabled"><span class="page-link">Next</span></li>
+          {% endif %}
+        </ul>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Modal -->
+
+
+<div class="modal fade" id="addBookingModal" tabindex="-1" aria-labelledby="addBookingModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="POST">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title">Add New Booking</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+<div class="mb-3">
+  <label class="form-label">Accommodation</label>
+  <select id="id_accommodation" class="form-select" required>
+    <option value="">Select Accommodation</option>
+    {% for acc in accommodations %}
+      <option value="{{ acc.id }}">{{ acc.name }}</option>
+    {% endfor %}
+  </select>
+</div>
+
+<div class="mb-3">
+  <label class="form-label">Block</label>
+  <select id="id_block" class="form-select" required disabled>
+    <option value="">Select Block</option>
+  </select>
+</div>
+        <div class="mb-3">
+        <label class="form-label">Select Apartment Type</label>
+        <select id="id_apartment_type" class="form-select" required disabled>
+        <option value="">Select Apartment Type</option>
+        <option value="deluxe">Deluxe</option>
+        <option value="premium">Premium</option>
+        </select>
+      </div>
+<div class="mb-3">
+  <label class="form-label">Apartment</label>
+  <select id="id_apartment" class="form-select" required disabled>
+    <option value="">Select Apartment</option>
+  </select>
+</div>
+
+<div class="mb-3">
+  <label class="form-label">Room</label>
+  <select name="room_number" id="id_room" class="form-select" required disabled>
+    <option value="">Select Room</option>
+  </select>
+</div>
+
+<div class="mb-3">
+  <label class="form-label">Student</label>
+  {{ booking_form.student }}
+</div>
+<div class="mb-3">
+  <label class="form-label">Status</label>
+  {{ booking_form.status }}
+</div>
+<div class="modal-footer">
+  <button type="submit" name="add_booking" class="btn btn-primary">Add Booking</button>
+
+</div>
+</form>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+  
+
+  <!-- Footer -->
+  <footer class="footer mt-auto" id="footer">
+    <div class="container">
+      <section class="d-flex justify-content-between align-items-center p-4" style="background-color: #6351ce">
+        <div class="me-5 text-white">Get connected with us on social networks:</div>
+        <div>
+          <a href="https://www.facebook.com/uniten/" class="text-white me-3"><i class="fab fa-facebook-f"></i></a>
+          <a href="https://twitter.com/uniten" class="text-white me-3"><i class="fab fa-twitter"></i></a>
+          <a href="https://www.instagram.com/uniten.official" class="text-white me-3"><i class="fab fa-instagram"></i></a>
+          <img src="{% static 'images/logo_uniten-1.png' %}" alt="UNITEN Logo" class="img-fluid" style="height: 70px; margin-left: 20px;">
+        </div>
+      </section>
+      <section class="mt-4 text-white">
+        <div class="row">
+          <div class="col-md-4">
+            <h6 class="fw-bold">Universiti Tenaga Nasional</h6>
+            <p>Managing UNITEN student accommodations efficiently.</p>
+          </div>
+          <div class="col-md-4">
+            <h6 class="fw-bold">Quick Links</h6>
+            <p><a href="#" class="text-white">Complaints</a></p>
+            <p><a href="#" class="text-white">Bookings</a></p>
+            <p><a href="#" class="text-white">Apartments</a></p>
+          </div>
+          <div class="col-md-4">
+            <h6 class="fw-bold">Contact</h6>
+            <p><i class="fas fa-home me-2"></i> Kajang, Selangor</p>
+            <p><i class="fas fa-envelope me-2"></i> <a href="#" class="text-white">Student Hub</a></p>
+            <p><i class="fas fa-phone me-2"></i> +603-8921 2020</p>
+          </div>
+        </div>
+      </section>
+      <div class="text-center p-3 text-white" style="background-color: rgba(0, 0, 0, 0.2)">
+        © 2025 UNITEN
+      </div>
+    </div>
+  </footer>
+
+  <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+  <script>
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('active');
+      document.getElementById('content')?.classList.toggle('active');
+      document.getElementById('footer')?.classList.toggle('active');
+    }
+  </script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const currentPath = window.location.pathname.toLowerCase();
+      document.querySelectorAll('#sidebar a').forEach(link => {
+        const linkPath = link.getAttribute('href').toLowerCase();
+        if (currentPath === linkPath) {
+          link.classList.add('active');
+        }
+      });
+    });
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const accommodationSelect = document.getElementById('id_accommodation');
+      const blockSelect = document.getElementById('id_block');
+      const apartmentTypeSelect = document.getElementById('id_apartment_type');
+      const apartmentSelect = document.getElementById('id_apartment');
+      const roomSelect = document.getElementById('id_room'); // Optional: only if exists
+    
+      accommodationSelect.addEventListener('change', function () {
+        const accId = this.value;
+        if (!accId) return;
+    
+        fetch(`/get-blocks/${accId}/`)
+          .then(res => res.json())
+          .then(data => {
+            blockSelect.innerHTML = '<option value="">Select Block</option>';
+            data.forEach(block => {
+              blockSelect.innerHTML += `<option value="${block.id}">${block.name}</option>`;
+
+            });
+            blockSelect.disabled = false;
+            apartmentTypeSelect.disabled = true;
+            apartmentSelect.disabled = true;
+            if (roomSelect) roomSelect.disabled = true;
+          });
+      });
+    
+      blockSelect.addEventListener('change', function () {
+        const blockId = this.value;
+        if (!blockId) return;
+    
+        // Enable apartment type dropdown
+        apartmentTypeSelect.disabled = false;
+    
+        // Clear apartment dropdown
+        apartmentSelect.innerHTML = '<option value="">Select Apartment</option>';
+        apartmentSelect.disabled = true;
+        if (roomSelect) roomSelect.disabled = true;
+      });
+    
+      apartmentTypeSelect.addEventListener('change', function () {
+        const blockId = blockSelect.value;
+        const aptType = this.value;
+        if (!blockId || !aptType) return;
+    
+        fetch(`/get-apartments/${blockId}/?type=${aptType}`)
+          .then(res => res.json())
+          .then(data => {
+            apartmentSelect.innerHTML = '<option value="">Select Apartment</option>';
+            data.forEach(apartment => {
+              apartmentSelect.innerHTML += `<option value="${apartment.id}">${apartment.apartment_number}</option>`;
+
+            });
+            apartmentSelect.disabled = false;
+            if (roomSelect) roomSelect.disabled = true;
+          });
+      });
+      apartmentSelect.addEventListener('change', function () {
+  const apartmentId = this.value;
+  if (!apartmentId) return;
+
+  fetch(`/get-rooms/${apartmentId}/`)
+    .then(res => res.json())
+    .then(data => {
+      roomSelect.innerHTML = '<option value="">Select Room</option>';
+      data.forEach(room => {
+        roomSelect.innerHTML += `<option value="${room.room_number}">${room.room_number}</option>`;
+      });
+      roomSelect.disabled = false;
+    });
+});
+
+    });
+    </script>
+  
+</body>
+</html>

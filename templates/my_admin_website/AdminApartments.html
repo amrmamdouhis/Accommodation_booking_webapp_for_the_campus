@@ -1,0 +1,377 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Apartments - UNITEN Accommodation</title>
+
+  <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+  <link rel="stylesheet" href="{% static 'FontAwesome/fontawesome-free-6.7.2-web/css/all.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/side_nav_bar.css' %}">
+  <link rel="stylesheet" href="{% static 'bootstrap_icones/iconsfonts/bootstrap-icons.css' %}">
+  <link rel="stylesheet" href="{% static 'css/footer.css' %}">
+  <link rel="stylesheet" href="{% static 'css/AdminDashboard.css' %}">
+  <style>
+    .content { margin-top: 70px; }
+    .table th, .table td { vertical-align: middle; }
+  </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<nav class="sidebar" id="sidebar">
+  <h4 class="fw-bold mb-4">UNITEN Accommodation</h4>
+  <a href="{% url 'admindashboard' %}"><i class="bi bi-house-door me-2"></i> Dashboard</a>
+  <a href="{% url 'adminprofile' %}"><i class="bi bi-person-circle me-2"></i> Profile</a>
+  <a href="{% url 'admincomplaints' %}"><i class="bi bi-exclamation-diamond me-2"></i> Complaints</a>
+  <a href="{% url 'maintenance' %}"><i class="bi bi-wrench-adjustable me-2"></i> Maintenance</a>
+  <a href="{% url 'adminbookings' %}"><i class="bi bi-journal-check me-2"></i> Bookings</a>
+  <a href="{% url 'adminapartments' %}" ><i class="bi bi-building me-2"></i> Apartments</a>
+  <a href="{% url 'Adminaddstudents' %}"><i class="bi bi-person-plus-fill me-2"></i> Admin - Add Students</a>
+  <a href="{% url 'admin-login' %}"><i class="bi bi-box-arrow-right me-2"></i> Logout</a>
+
+</nav>
+
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+  <div class="container-fluid px-4">
+    <button class="btn text-white me-3" onclick="toggleSidebar()">☰</button>
+    <a class="navbar-brand" href="admin_dashboard.html">Apartments Management</a>
+    <ul class="navbar-nav ms-auto d-flex flex-row align-items-center gap-3">
+      
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+          <img src="https://i.imgur.com/wvxPV9S.png" alt="admin" width="32" height="32" class="rounded-circle me-2">
+          <span class="text-white d-none d-md-inline">{{ user.name }}</span>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><a class="dropdown-item" href="{% url 'adminprofile' %}">View Profile</a></li>
+          <li><a class="dropdown-item" href="{% url 'admin-login' %}">Sign Out</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+
+<!-- Main Content -->
+<div class="content" id="content">
+  <div class="container my-5">
+    {% if messages %}
+  <div class="mt-3">
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+
+      <div class="d-flex gap-2 mb-4 flex-wrap">
+        <button class="btn btn-success mt-2" data-bs-toggle="modal" data-bs-target="#addApartmentModal">
+          <i class="bi bi-plus-circle me-1"></i> Add Apartment
+        </button>
+        <button class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#addAccommodationModal">
+          <i class="bi bi-building-add me-1"></i> Add Accommodation
+        </button>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
+      <form method="GET" class="d-flex flex-wrap gap-2">
+        <div class="input-group" style="max-width: 300px;">
+          <span class="input-group-text bg-white border-end-0">
+            <i class="bi bi-search"></i>
+          </span>
+          <input type="text" name="q" class="form-control border-start-0" placeholder="Search by block or apartment..." value="{{ request.GET.q }}">
+        </div>
+    
+        <select class="form-select" name="status" style="width: 200px;">
+          <option value="">Filter by status</option>
+          <option value="Active" {% if request.GET.status == "Active" %}selected{% endif %}>Active</option>
+          <option value="Inactive" {% if request.GET.status == "Inactive" %}selected{% endif %}>Inactive</option>
+        </select>
+    
+        <button class="btn btn-primary" type="submit">Search</button>
+        <a href="{% url 'adminapartments' %}" class="btn btn-outline-secondary">Reset</a>
+      </form>
+    </div>
+    
+
+    <table class="table table-bordered table-striped">
+      <thead class="table-dark">
+        <tr>
+          <th>Accommodation</th>
+          <th>Block</th>
+          <th>Level</th>
+          <th>Apartment Number</th>
+          <th>Apartment Type</th>
+          <th>Available Rooms</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for apartment in apartments %}
+          <tr>
+            <td>{{ apartment.block.accommodation.name }}</td>  
+            <td>{{ apartment.block.name }}</td>
+            <td>{{ apartment.level }}</td>
+            <td>{{ apartment.apartment_number }}</td>
+            <td>{{ apartment.type }}</td>
+            <td>{{ apartment.available_rooms_count }}</td>  
+            <td>
+              {% if apartment.status == 'Active' %}
+                <span class="badge bg-success">{{ apartment.status }}</span>
+              {% else %}
+                <span class="badge bg-secondary">{{ apartment.status }}</span>
+              {% endif %}
+            </td>
+            <td>
+              <!-- Edit Button -->
+              <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#editApartmentModal{{ apartment.id }}">
+                Edit
+              </button>
+    
+              <a href="{% url 'toggle_apartment_status' apartment.id %}" class="btn btn-sm {% if apartment.status == 'Active' %}btn-outline-danger{% else %}btn-outline-success{% endif %}">
+                {% if apartment.status == 'Active' %}Deactivate{% else %}Activate{% endif %}
+              </a>
+            </td>
+          </tr>
+        {% empty %}
+          <tr class="text-center text-muted">
+            <td colspan="8">No apartments found.</td> 
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    
+
+    <nav aria-label="Apartment Table Pagination">
+      <ul class="pagination justify-content-end mt-3">
+        {% if apartments.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.status %}status={{ request.GET.status }}&{% endif %}page={{ apartments.previous_page_number }}">Previous</a>
+          </li>
+        {% endif %}
+    
+        {% for num in apartments.paginator.page_range %}
+          <li class="page-item {% if apartments.number == num %}active{% endif %}">
+            <a class="page-link" href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.status %}status={{ request.GET.status }}&{% endif %}page={{ num }}">{{ num }}</a>
+          </li>
+        {% endfor %}
+    
+        {% if apartments.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.status %}status={{ request.GET.status }}&{% endif %}page={{ apartments.next_page_number }}">Next</a>
+          </li>
+        {% endif %}
+      </ul>
+    </nav>
+    
+  </div>
+</div>
+
+<!-- Accommodation Modal -->
+<div class="modal fade" id="addAccommodationModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="POST">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title">Add Accommodation</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            {{ accommodation_form.name.label_tag }}
+            {{ accommodation_form.name }}
+          </div>
+          <div class="mb-3">
+            {{ accommodation_form.location.label_tag }}
+            {{ accommodation_form.location }}
+          </div>
+          <div class="mb-3">
+            <label for="id_number_of_blocks">Number of Blocks</label>
+            <input type="number" name="number_of_blocks" id="id_number_of_blocks" class="form-control" min="1">
+          </div>
+          <div id="block-names-container"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" name="add_accommodation" class="btn btn-primary">Add</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<!-- Edit Modal -->
+{% for apartment in apartments %}
+<div class="modal fade" id="editApartmentModal{{ apartment.id }}" tabindex="-1" aria-labelledby="editApartmentModalLabel{{ apartment.id }}" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="POST" action="{% url 'edit_apartment' apartment.id %}">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title">Edit Apartment</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+          
+
+          <div class="mb-3">
+            <label for="apartment_number{{ apartment.id }}" class="form-label">Apartment Number</label>
+            <input type="text" name="apartment_number" class="form-control" id="apartment_number{{ apartment.id }}" value="{{ apartment.apartment_number }}" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="level{{ apartment.id }}" class="form-label">Level</label>
+            <input type="number" name="level" class="form-control" id="level{{ apartment.id }}" value="{{ apartment.level }}" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="status{{ apartment.id }}" class="form-label">Status</label>
+            <select name="status" id="status{{ apartment.id }}" class="form-select">
+              <option value="Active" {% if apartment.status == 'Active' %}selected{% endif %}>Active</option>
+              <option value="Inactive" {% if apartment.status == 'Inactive' %}selected{% endif %}>Inactive</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+
+<!-- Apartment Modal -->
+<div class="modal fade" id="addApartmentModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="POST">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title">Add Apartment</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          {{ apartment_form.as_p }}
+        </div>
+        
+        <div class="modal-footer">
+          <button type="submit" name="add_apartment" class="btn btn-success">Add</button>
+        </div>
+      </form>
+      <!-- Upload Excel for Apartments -->
+<div class="card mt-4">
+  <div class="card-header"><strong>Upload Apartments from Excel</strong></div>
+  <div class="card-body">
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="excel_file">Excel File (.xlsx)</label>
+        <input type="file" name="excel_file" class="form-control" required>
+      </div>
+      <div class="d-flex justify-content-end">
+        <button type="submit" name="upload_excel" class="btn btn-success">Upload</button>
+      </div>
+      
+    </form>
+  </div>
+</div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="footer mt-auto" id="footer">
+  <div class="container">
+    <section class="d-flex justify-content-between align-items-center p-4" style="background-color: #6351ce">
+      <div class="me-5 text-white">Get connected with us on social networks:</div>
+      <div>
+        <a href="https://www.facebook.com/uniten/" class="text-white me-3"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://twitter.com/uniten" class="text-white me-3"><i class="fab fa-twitter"></i></a>
+        <a href="https://www.instagram.com/uniten.official" class="text-white me-3"><i class="fab fa-instagram"></i></a>
+        <img src="{% static 'images/logo_uniten-1.png' %}" alt="UNITEN Logo" class="img-fluid" style="height: 70px; margin-left: 20px;">
+      </div>
+    </section>
+    <section class="mt-4 text-white">
+      <div class="row">
+        <div class="col-md-4">
+          <h6 class="fw-bold">Universiti Tenaga Nasional</h6>
+          <p>Managing UNITEN student accommodations efficiently.</p>
+        </div>
+        <div class="col-md-4">
+          <h6 class="fw-bold">Quick Links</h6>
+          <p><a href="admin_complaints.html" class="text-white">Complaints</a></p>
+          <p><a href="admin_bookings.html" class="text-white">Bookings</a></p>
+          <p><a href="admin_apartments.html" class="text-white">Apartments</a></p>
+        </div>
+        <div class="col-md-4">
+          <h6 class="fw-bold">Contact</h6>
+          <p><i class="fas fa-home me-2"></i> Kajang, Selangor</p>
+          <p><i class="fas fa-envelope me-2"></i>
+            <a href="https://www.uniten.edu.my/student-hub/" class="text-white">Student Hub</a>
+          </p>
+          <p><i class="fas fa-phone me-2"></i> +603-8921 2020</p>
+        </div>
+      </div>
+    </section>
+    <div class="text-center p-3 text-white" style="background-color: rgba(0, 0, 0, 0.2)">
+      © 2025 UNITEN
+    </div>
+  </div>
+</footer>
+<script>
+  const blockCountInput = document.getElementById('id_number_of_blocks');
+  const blockContainer = document.getElementById('block-names-container');
+
+  blockCountInput.addEventListener('input', function () {
+    const count = parseInt(this.value);
+    blockContainer.innerHTML = ''; // clear previous
+
+    if (!isNaN(count) && count > 0) {
+      for (let i = 1; i <= count; i++) {
+        const div = document.createElement('div');
+        div.className = 'mb-3';
+        div.innerHTML = `
+          <label for="block_name_${i}">Block Name ${i}</label>
+          <input type="text" name="block_name_${i}" id="block_name_${i}" class="form-control" required>
+        `;
+        blockContainer.appendChild(div);
+      }
+    }
+  });
+</script>
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+<script>
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('active');
+    document.getElementById('content')?.classList.toggle('active');
+    document.getElementById('footer')?.classList.toggle('active');
+  }
+</script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const currentPath = window.location.pathname.toLowerCase();
+    document.querySelectorAll('#sidebar a').forEach(link => {
+      const linkPath = link.getAttribute('href').toLowerCase();
+      if (currentPath === linkPath) {
+        link.classList.add('active');
+      }
+    });
+  });
+</script>
+</body>
+</html>

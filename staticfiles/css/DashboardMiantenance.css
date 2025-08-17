@@ -1,0 +1,19 @@
+/* Push content right */
+.content-area {
+    margin-left: 0px;
+    padding: 2rem;
+  }
+  .footer {
+      background-color: #1c2331;
+      color: white;
+      text-align: center;
+    }
+    
+  
+    
+    .wrapper {
+      display: flex;
+      flex-direction: column;
+      min-height:120vh;
+    }
+    

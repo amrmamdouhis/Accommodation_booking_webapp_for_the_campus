@@ -1,0 +1,76 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cancel Booking - UNITEN</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="{% static 'important libraries/css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/User_profile.css' %}">
+  <link rel="stylesheet" href="{% static 'css/cancellation_booking.css' %}">
+  <link rel="stylesheet" href="{% static 'bootstrap_icones/iconsfonts/bootstrap-icons.css' %}">
+</head>
+
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Cancel Booking</a>
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link active" href="{% url 'studentdashboard' %}">
+            <i class="bi bi-house-door"></i> Dashboard
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="content-area" id="content">
+    <div class="container mt-4 mb-5 d-flex justify-content-center">
+      <div class="card p-4 w-100" style="max-width: 600px;">
+        <div class="text-center">
+          <h4>Current Booking Details</h4>
+          <p><strong>Room Number:</strong> {{ booking.room.room_number }}</p>
+          <p><strong>Room Type:</strong> {{ booking.room.apartment.type }}</p>
+          <p><strong>Price:</strong> RM {{ price }}</p>
+          <p><strong>Booking Date:</strong> {{ booking.booking_date }} </p>
+          <p><strong>Expiration Date:</strong>{{ booking.expiration_date  }}</p>
+
+
+
+          <hr>
+
+          <h5>Are you sure you want to cancel your booking?</h5>
+          <p>Please note that cancellation is irreversible.</p>
+
+          <form method="post">
+  {% csrf_token %}
+  <button type="submit" class="btn btn-danger px-4">Confirm Cancellation</button>
+</form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    function toggleSidebar() {
+      document.getElementById('sidebar')?.classList.toggle('active');
+      document.getElementById('content')?.classList.toggle('active');
+    }
+
+    function confirmCancellation() {
+      alert("Your booking has been successfully cancelled.");
+      window.location.href = "{% url 'user_profile' %}";
+    }
+
+   
+  </script>
+
+  <script src="{% static 'bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>

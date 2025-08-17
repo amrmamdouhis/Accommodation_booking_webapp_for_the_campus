@@ -1,0 +1,446 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Apply for a Room - UNITEN</title>
+
+  <!-- CSS -->
+ 
+  <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+  <link rel="stylesheet" href="{% static 'FontAwesome/fontawesome-free-6.7.2-web/css/all.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/side_nav_bar.css' %}">
+  <link rel="stylesheet" href="{% static 'bootstrap_icones/iconsfonts/bootstrap-icons.css' %}">
+  <link rel="stylesheet" href="{% static 'css/teat.css' %}">
+  <link rel="stylesheet" href="{% static 'css/footer.css' %}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icon-css/css/flag-icons.min.css">
+  <style>
+  .selected-room {
+  border: 2px solid #28a745 !important;
+  background-color: #e8f5e9;
+}
+</style>
+<style>
+   .wrapper {
+    display: flex;
+  }
+
+  /* Sidebar */
+  #sidebar {
+    width: 250px;
+    transition: all 0.3s ease;
+  }
+
+  #sidebar.active {
+    margin-left: -250px;
+  }
+
+  /* Content */
+  .content-area {
+    margin-left: 250px;
+    transition: margin-left 0.3s ease;
+    padding: 2rem;
+    flex: 1;
+  }
+
+  .content-area.active {
+    margin-left: 0;
+  }
+
+  /* Footer */
+  footer {
+    margin-left: 250px;
+    transition: margin-left 0.3s ease;
+  }
+
+  footer.active {
+    margin-left: 0;
+  }
+
+  .sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 250px;
+  background-color: #343a40;
+  color: white;
+  padding-top: 60px;
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+
+.sidebar a {
+  display: block;
+  color: white;
+  padding: 10px 20px;
+  text-decoration: none;
+}
+
+.sidebar a:hover {
+  background-color: #495057;
+  color: #fff;
+}
+#page-header {
+  margin-left: 250px;
+  transition: margin-left 0.3s ease;
+}
+
+#page-header.active {
+  margin-left: 0;
+}
+
+</style>
+
+</head>
+
+<body>
+            <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+  <div class="container-fluid">
+           
+    <a class="navbar-brand ms-5" href="#">Apply for a Room</a>
+    <ul class="navbar-nav ms-auto d-flex flex-row align-items-center">
+      
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+          <img src="https://i.imgur.com/wvxPV9S.png" alt="user" width="30" height="30" class="rounded-circle me-2">
+          <span class="d-none d-md-inline text-white"> {{ user.name }}</span>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><a class="dropdown-item" href="{% url 'user_profile' %}">View Profile</a></li>
+          <li><a class="dropdown-item" href="{% url 'studentlogin' %}">Sign Out</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</nav>
+    
+
+  
+
+{% block content %}
+<div class="wrapper">
+    {% include 'includes/user_sidebar.html' %}
+
+   <div class="content-area" id="content">
+        <div class="container mt-4">
+            <h2 class="mb-4"><i class="bi bi-journal-check"></i> Apply for a Room</h2>
+
+            {% if messages %}
+              {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+              {% endfor %}
+            {% endif %}
+
+            {% if existing_booking %}
+              <div class="alert alert-warning">
+                  You have already applied for or booked a room.
+                  <br>
+                  <strong>Room Number:</strong> {{ existing_booking.room.room_number }} <br>
+                  <strong>Status:</strong> {{ existing_booking.get_status_display }}
+              </div>
+            {% else %}
+              <form id="applyRoomForm" method="POST">
+                {% csrf_token %}
+                <div class="card shadow">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0"><i class="bi bi-building-check"></i> Available Rooms for Booking</h5>
+                    </div>
+<div class="card-body row">
+  <div class="col-md-6 room-section">
+    <h6><i class="bi bi-star-fill text-warning"></i> Deluxe Rooms</h6>
+    <ul id="deluxeRoomList" class="list-group">
+      {% for room in deluxe_rooms %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <div>
+            <strong>Room {{ room.name }}</strong> — {{ room.block }}-{{room.accommodation}}
+          
+            {% if room.resident %}
+              <div class="text-muted small">
+                <img src="https://flagcdn.com/24x18/{{ room.resident.flag }}.png" alt="{{ room.resident.country }} flag">
+                {{ room.resident.country }} | {{ room.resident.course }}
+              </div>
+            {% else %}
+              <div class="text-success small">Available</div>
+            {% endif %}
+          </div>
+          {% if not room.resident %}
+    <form >
+      {% csrf_token %}
+      <input type="hidden" name="room_id" value="{{ room.id }}">
+<button type="button"
+        class="btn btn-outline-primary btn-sm select-room-btn"
+        data-room='{{ room|safe|escapejs }}'>
+  <i class="bi bi-check2-square"></i> Select
+</button>    </form>
+  {% endif %}
+        </li>
+      {% empty %}
+        <li class="list-group-item text-muted">No deluxe rooms found.</li>
+      {% endfor %}
+    </ul>
+    <div id="deluxePagination" class="mt-2"></div>
+  </div>
+  
+
+
+  <div class="col-md-6 room-section">
+    <h6><i class="bi bi-gem text-primary"></i> Premium Rooms</h6>
+    <ul id="premiumRoomList" class="list-group">
+      {% for room in premium_rooms %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <div>
+            <strong>Room {{ room.name }}</strong> — {{ room.block }}-{{room.accommodation}}
+              
+            {% if room.resident %}
+              <div class="text-muted small">
+                <img src="https://flagcdn.com/24x18/{{ room.resident.flag }}.png" alt="{{ room.resident.country }} flag">
+                {{ room.resident.country }} | {{ room.resident.course }}
+              </div>
+            {% else %}
+              <div class="text-success small">Available</div>
+            {% endif %}
+          </div>
+          {% if not room.resident %}
+    <form method="post" >
+      {% csrf_token %}
+      <input type="hidden" name="room_id" value="{{ room.id }}">
+      <button type="button" class="btn btn-sm btn-outline-success">Select</button>
+    </form>
+   {% endif %}
+        </li>
+      {% empty %}
+        <li class="list-group-item text-muted">No premium rooms found.</li>
+      {% endfor %}
+    </ul>
+      <!-- Below premiumRoomList -->
+<div id="premiumPagination" class="mt-2"></div>
+  </div>
+
+</div>
+
+<div class="row mt-4">
+                    <!-- <div class="col-md-6 mb-3">
+                        <label for="roomType" class="form-label">Select Room Type:</label>
+                        <select id="roomType" name="roomType" class="form-select" >
+                            <option value="" selected disabled>-- Choose a Room Type --</option>
+                            <option value="deluxe">Deluxe Room</option>
+                            <option value="premium">Premium Room</option>
+                        </select>
+                    </div> -->
+                    <div class="col-md-6 mb-3">
+                        <label for="preferredBlock" class="form-label">Preferred Block:</label>
+                                        <select class="form-select" id="preferredBlock">
+                      <option value="">-- Choose block --</option>
+                      {% for block in all_blocks %}
+                        <option value="{{ block.name }}">{{ block.name }}</option>
+                      {% endfor %}
+                    </select>
+                                        </div>
+                                          <div class="col-md-6 mb-3">
+                        <label for="preferredAccommodation" class="form-label">Preferred Accommodation:</label>
+                                        <select class="form-select mb-2" id="accommodationFilter">
+  <option value="">-- Choose accommodation --</option>
+  {% for acc in all_accommodations %}
+    <option value="{{ acc.name }}">{{ acc.name }}</option>
+  {% endfor %}
+</select>
+                                          </div>
+                </div>
+
+                
+
+                <div class="text-end">
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-check-circle"></i> Apply Now
+                    </button>
+                </div>
+              </form>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+  {% include 'includes/footer.html' %}
+
+     <script>
+    function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const content = document.getElementById('content');
+  const footer = document.querySelector('footer');
+  const header = document.getElementById('page-header');
+
+  sidebar.classList.toggle('active');
+  content.classList.toggle('active');
+  footer.classList.toggle('active');
+  header.classList.toggle('active');
+}
+
+
+   document.addEventListener("DOMContentLoaded", function () {
+   const currentPath = window.location.pathname.toLowerCase();
+   document.querySelectorAll('#sidebar a').forEach(link => {
+    const linkPath = link.getAttribute('href').toLowerCase();
+    if (currentPath.includes(linkPath)) {
+      link.classList.add('active');
+        }
+      });
+    });
+    </script>
+  <script>
+const rooms = JSON.parse('{{ all_rooms_json|escapejs }}');
+const ROOMS_PER_PAGE = 10;
+let deluxeCurrentPage = 1;
+let premiumCurrentPage = 1;
+
+function paginate(array, page = 1, perPage = 10) {
+  const totalPages = Math.ceil(array.length / perPage);
+  return {
+    data: array.slice((page - 1) * perPage, page * perPage),
+    page,
+    totalPages
+  };
+}
+
+function filterRoomsData(type) {
+  // const selectedType = document.getElementById('roomType').value;
+  const selectedBlock = document.getElementById('preferredBlock').value;
+  const selectedAccommodation = document.getElementById('accommodationFilter').value;
+
+  return rooms.filter(room => {
+    if (room.type !== type) return false; // keep room type (deluxe/premium) separation
+    // if (selectedType && room.type !== selectedType) return false;
+    if (selectedBlock && room.block !== selectedBlock) return false;
+    if (selectedAccommodation && room.accommodation !== selectedAccommodation) return false;
+    return true;
+  });
+}
+
+
+function renderRoomList(filteredRooms, listElement, paginationElement, currentPage, type) {
+  const { data: pagedRooms, totalPages } = paginate(filteredRooms, currentPage, ROOMS_PER_PAGE);
+  listElement.innerHTML = "";
+  paginationElement.innerHTML = "";
+
+  pagedRooms.forEach(room => {
+    const li = document.createElement('li');
+    li.className = 'list-group-item d-flex justify-content-between align-items-center';
+    const residentsHtml = room.residents && room.residents.length > 0
+      ? `<div class="text-muted small">
+          <img src="https://flagcdn.com/24x18/${room.residents[0].flag}.png">
+          ${room.residents[0].country} | ${room.residents[0].course}
+        </div>`
+      : `<div class="text-success small">Available</div>`;
+const selectedRoom = sessionStorage.getItem("selectedRoom")
+  ? JSON.parse(sessionStorage.getItem("selectedRoom"))
+  : null;
+
+let buttonHTML = '';
+if (!room.residents?.length) {
+  const isSelected = selectedRoom && selectedRoom.id === room.id;
+  buttonHTML = `
+    <button class="btn btn-sm ${isSelected ? 'btn-success' : 'btn-outline-primary'} select-btn"
+            onclick='selectRoom(${JSON.stringify(room)})'>
+      <i class="bi ${isSelected ? 'bi-check-circle' : 'bi-check2-square'}"></i> 
+      ${isSelected ? 'Selected' : 'Select'}
+    </button>`;
+}
+
+
+    li.innerHTML = `
+      <div>
+        <strong>Room ${room.name}</strong> — ${room.block}-${room.accommodation}
+         <div class="text-muted small">Level: ${room.level}</div> 
+        ${residentsHtml}
+      </div>
+      ${buttonHTML}
+    `;
+    listElement.appendChild(li);
+  });
+
+  if (totalPages > 1) {
+    for (let i = 1; i <= totalPages; i++) {
+      const btn = document.createElement('button');
+      btn.textContent = i;
+      btn.className = `btn btn-sm ${i === currentPage ? 'btn-primary' : 'btn-outline-primary'} me-1`;
+      btn.onclick = () => {
+        if (type === 'deluxe') deluxeCurrentPage = i;
+        if (type === 'premium') premiumCurrentPage = i;
+        renderRooms();  // re-render both lists
+      };
+      paginationElement.appendChild(btn);
+    }
+  }
+}
+
+function renderRooms() {
+  const deluxeRoomList = document.getElementById('deluxeRoomList');
+  const premiumRoomList = document.getElementById('premiumRoomList');
+  const deluxePagination = document.getElementById('deluxePagination');
+  const premiumPagination = document.getElementById('premiumPagination');
+
+  const deluxeFiltered = filterRoomsData('deluxe');
+  const premiumFiltered = filterRoomsData('premium');
+
+  renderRoomList(deluxeFiltered, deluxeRoomList, deluxePagination, deluxeCurrentPage, 'deluxe');
+  renderRoomList(premiumFiltered, premiumRoomList, premiumPagination, premiumCurrentPage, 'premium');
+}
+
+function selectRoom(room) {
+  const selected = sessionStorage.getItem("selectedRoom");
+  let isSameRoom = false;
+
+  if (selected) {
+    const selectedRoom = JSON.parse(selected);
+    isSameRoom = selectedRoom.id === room.id;
+  }
+
+  if (isSameRoom) {
+    // Deselect the room
+    sessionStorage.removeItem("selectedRoom");
+  } else {
+    // Select new room
+    sessionStorage.setItem("selectedRoom", JSON.stringify(room));
+  }
+
+  renderRooms();
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  renderRooms();
+
+  // Set up filters
+  document.getElementById('preferredBlock').addEventListener('change', () => {
+    deluxeCurrentPage = premiumCurrentPage = 1;
+    renderRooms();
+  });
+  document.getElementById('accommodationFilter').addEventListener('change', () => {
+    deluxeCurrentPage = premiumCurrentPage = 1;
+    renderRooms();
+  });
+
+  // Apply form submission
+  document.getElementById('applyRoomForm').addEventListener('submit', function (event) {
+    event.preventDefault();
+    const selected = sessionStorage.getItem("selectedRoom");
+    if (!selected) {
+      alert("Please select a room before applying.");
+      return;
+    }
+    const selectedRoom = JSON.parse(selected);
+    window.location.href = `confirmation/?room_id=${selectedRoom.id}`;
+  });
+});
+</script>
+
+
+  <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+ 
+
+
+
+</body>
+</html>

@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Booking Confirmation</title>
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/reapplying_confirmation.css' %}">
+  <link rel="stylesheet" href="{% static 'bootstrap_icones/iconsfonts/bootstrap-icons.css' %}">
+</head>
+
+<body>
+  <header class="bg-dark text-white py-4 d-flex justify-content-between align-items-center" style="margin-left: 0px; padding: 0 2rem; margin-bottom: -30px;">
+    <!-- Optional: Logo -->
+    <!--
+    <a href="{% url 'homepage' %}">
+      <img src="{% static 'images/logo_uniten-1.png' %}" alt="UNITEN Logo" class="img-fluid" style="height: 80px;">
+    </a>
+    -->
+  </header>
+
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Reapplying Confirmation</a>
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link active" href="{% url 'studentdashboard' %}">
+            <i class="bi bi-house-door"></i> Dashboard
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="confirmation-box">
+    <h2 class="mb-4">Booking Confirmed</h2>
+    <p class="mb-4">You have successfully booked a <strong><span id="roomType"></span></strong> room.</p>
+    <a href="{% url 'user_profile' %}" class="btn btn-primary">Back to Profile</a>
+  </div>
+
+  <script>
+    function getParameterByName(name) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(name);
+    }
+
+    document.getElementById("roomType").innerText = getParameterByName("room") || "Unknown";
+  </script>
+</body>
+</html>
