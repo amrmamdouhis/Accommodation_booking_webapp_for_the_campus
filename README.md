@@ -42,15 +42,15 @@ You can log in with these accounts to test the system:
 
 Student Login
 
-Email:
+Email: CS30584216@uniten.edu
 
-Password: 
+Password: uni10pass!
 
 Admin Login
 
-Email: 
+Email: ad14725836@uniten.com
 
-Password: 
+Password: aduni10pass!
 ⚠️ Note: Credentials are for demo purposes only.
 
 🛠️ Tech Stack
