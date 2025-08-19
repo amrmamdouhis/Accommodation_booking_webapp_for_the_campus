@@ -45,6 +45,19 @@
       <!-- Main Content -->
       <div class="content-area" id="content">
         <div class="card p-4">
+           {% if messages %}
+                  <div class="container mt-3">
+                    {% for message in messages %}
+                      {% if forloop.last %}
+                        <div class="card border-danger">
+                          <div class="card-body text-danger">
+                            <strong>Error:</strong> {{ message }}
+                          </div>
+                        </div>
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                {% endif %}
           <form method="POST">
             {% csrf_token %}
             <div class="text-center">

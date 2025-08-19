@@ -78,6 +78,9 @@ def Adminaddstudents(request):
     form = AddStudentForm()
     if request.method == 'POST':
         if 'add_student' in request.POST:
+            if request.user.email == "ad14725836@uniten.com":
+                messages.error(request, "Demo mode: You cannot add new student.")
+                return redirect('Adminaddstudents')
             form = AddStudentForm(request.POST)
             if form.is_valid():
                 form.save()
@@ -91,6 +94,9 @@ def Adminaddstudents(request):
 
 
         elif 'upload_excel' in request.POST and request.FILES.get('excel_file'):
+            if request.user.email == "ad14725836@uniten.com":
+                messages.error(request, "Demo mode: You cannot add new students.")
+                return redirect('Adminaddstudents')
             excel_file = request.FILES['excel_file']
             try:
                 df = pd.read_excel(excel_file)
@@ -140,6 +146,9 @@ def manage_apartments(request):
     if request.method == 'POST':
         # Add apartment via form
         if 'add_apartment' in request.POST:
+            if request.user.email == "ad14725836@uniten.com":
+                messages.error(request, "Demo mode: You cannot add new apartment data.")
+                return redirect('adminapartments')
             apartment_form = ApartmentForm(request.POST)
             if apartment_form.is_valid():
                 apartment = apartment_form.save()
@@ -162,6 +171,9 @@ def manage_apartments(request):
 
        # Add accommodation via form
         elif 'add_accommodation' in request.POST:
+            if request.user.email == "ad14725836@uniten.com":
+                messages.error(request, "Demo mode: You cannot new accommodation.")
+                return redirect('adminapartments')
             accommodation_form = AccommodationForm(request.POST)
             if accommodation_form.is_valid():
                 accommodation = accommodation_form.save()
@@ -185,7 +197,9 @@ def manage_apartments(request):
         
         # Upload Excel for apartments
         elif 'upload_excel' in request.POST and request.FILES.get('excel_file'):
-            
+            if request.user.email == "ad14725836@uniten.com":
+                messages.error(request, "Demo mode: You cannot new apartments excel.")
+                return redirect('adminapartments')
             excel_file = request.FILES['excel_file']
             try:
                 df = pd.read_excel(excel_file, engine='openpyxl')
@@ -274,6 +288,9 @@ from .models import Apartment, Room, Booking  # adjust imports as needed
 
 def edit_apartment(request, apartment_id):
     if request.method == 'POST':
+        if request.user.email == "ad14725836@uniten.com":
+            messages.error(request, "Demo mode: You cannot modify apartment data.")
+            return redirect('adminapartments')
         apartment = get_object_or_404(Apartment, id=apartment_id)
 
         old_apartment_number = apartment.apartment_number
@@ -342,7 +359,9 @@ from accommodation.models import Room, Booking
 
 def toggle_apartment_status(request, apartment_id): 
     apartment = get_object_or_404(Apartment, id=apartment_id)
-
+    if request.user.email == "ad14725836@uniten.com":
+                messages.error(request, "Demo mode: You cannot modify apartment data.")
+                return redirect('adminapartments')
     if apartment.status == 'Active':
         apartment.status = 'Inactive'
         apartment.save()
@@ -378,6 +397,9 @@ def toggle_apartment_status(request, apartment_id):
 
 
 def cancel_booking(request, booking_id):
+    if request.user.email == "ad14725836@uniten.com":
+                messages.error(request, "Demo mode: You cannot cancel booking.")
+                return redirect('adminbookings')
     booking = get_object_or_404(Booking, id=booking_id)
     booking.status = 'cancelled'
     booking.save()
@@ -403,6 +425,9 @@ def adminbookings(request):
         bookings_list = bookings_list.filter(status=status_filter)
 
     if request.method == 'POST' and 'add_booking' in request.POST:
+        if request.user.email == "ad14725836@uniten.com":
+                messages.error(request, "Demo mode: You cannot add new booking.")
+                return redirect('adminbookings')
         booking_form = BookingForm(request.POST)
         room_number = request.POST.get('room_number') 
        
@@ -452,6 +477,9 @@ def admincomplaints(request):
         complaints = complaints.filter(status=status_filter.lower())
 
     if request.method == 'POST' and 'submit_reply' in request.POST:
+        if request.user.email == "ad14725836@uniten.com":
+                messages.error(request, "Demo mode: You cannot add a reply on a complain.")
+                return redirect('admincomplaints')
         complaint_id = request.POST.get('complaint_id')
         complaint = get_object_or_404(Complaint, id=complaint_id)
 
@@ -495,6 +523,9 @@ def adminmaintenance(request):
     
 
     if request.method == 'POST' and 'submit_maintenance_reply' in request.POST:
+        if request.user.email == "ad14725836@uniten.com":
+                messages.error(request, "Demo mode: You cannot add a reply on a maintenance request.")
+                return redirect('maintenance')
         maintenance_id = request.POST.get('maintenance_id')
         reply_text = request.POST.get('reply', '').strip()
         new_status = request.POST.get('status')

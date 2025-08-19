@@ -5,7 +5,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Login - UNITEN Accommodation</title>
-  
   <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
   <link rel="stylesheet" href="{% static 'FontAwesome/fontawesome-free-6.7.2-web/css/all.min.css' %}">
   <link rel="stylesheet" href="{% static 'css/side_nav_bar.css' %}">
@@ -75,6 +74,9 @@
       </a>
     </header>
 
+
+
+
     <!-- Login Section -->
     <section class="bg-light py-3 py-md-5">
       <div class="container">
@@ -96,6 +98,12 @@
                   </div>
                 {% endif %}
                 <h2 class="fs-6 fw-normal text-center text-secondary mb-4">Login to your Admin account</h2>
+                    <div style="background-color:#f0f4ff; border:1px solid #b3c7ff; padding:10px; border-radius:6px; margin-bottom:15px; color:#660000;">
+                      <strong>Demo Access:</strong><br>
+                      Email: <code>ad14725836@uniten.com</code><br>
+                      Password: <code>aduni10pass!</code>
+                    </div>
+
                 <form method="POST">
                   {% csrf_token %}
                   <div class="mb-3 form-floating">

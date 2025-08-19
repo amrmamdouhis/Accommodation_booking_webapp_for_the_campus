@@ -60,7 +60,9 @@ def adminprofile(request):
   
 
     if request.method == 'POST':
-        
+        if request.user.email == "ad14725836@uniten.com":
+                messages.error(request, "Demo mode: You cannot change profile data.")
+                return redirect('adminprofile')
         phone = request.POST.get('phone_number', '').strip()
         new_password = request.POST.get('new_password', '').strip()
         user.phone_number = phone
@@ -83,6 +85,9 @@ def user_profile(request):
     current_room = current_booking.room if current_booking else None
 
     if request.method == 'POST':
+        if request.user.email == "CS30584216@uniten.edu":
+                messages.error(request, "Demo mode: You cannot change profile data.")
+                return redirect('user_profile')
         phone = request.POST.get('phone_number', '').strip()
         new_password = request.POST.get('new_password', '').strip()
 
